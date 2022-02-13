@@ -5,6 +5,9 @@ metadata:
   labels:
     app: lottery-app
     environment: development
+    app.kubernetes.io/name: lottery-app
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: webapp
 spec:
   containers:
   - name: lottery-websvc

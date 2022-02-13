@@ -103,7 +103,7 @@ Explore:
 
 ## Contexts
 
-* [Organizing Cluster Access Using kubeconfig Files]()
+* [Organizing Cluster Access Using kubeconfig Files](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)
 * [Create pods in each namespace](https://kubernetes.io/docs/tasks/administer-cluster/namespaces-walkthrough/)
 * [Configure Access to Multiple Clusters](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/)
 
@@ -181,7 +181,7 @@ Explore:
   exit
   ```
 
-* Use port forwarding:
+* Use port forwarding in a second terminal window:
   ```
   kubectl port-forward -h
   kubectl port-forward nginx 8080:80
@@ -194,10 +194,13 @@ Explore:
   ```
 
 * Clean up:
-  ```
-  kubectl get all
-  kubectl delete pod/nginx pod/busybox
-  ```
+
+  * Stop the port forwarding
+  * Remove the objects:
+    ```
+    kubectl get all
+    kubectl delete pod/nginx pod/busybox
+    ```
 
 ## Storage 
 
@@ -212,12 +215,28 @@ Explore:
 We will use [init-container-pod.yaml](./init-container-pod.yaml) for this demo. Run and connect:
 ```
 kubectl apply -f init-container.yaml
-kubectl get all
-kubectl describe pod/demo-webapp
-kubectl port-forward demo-webapp 8080:80
-curl localhost:8080
-kubectl delete pod/demo-webapp
 ```
+
+Explore:
+* Get information about our pod:
+  ```
+  kubectl get all
+  kubectl describe pod/demo-webapp
+  ```
+
+* Use port forwarding in a second terminal window:
+  ```
+  kubectl port-forward demo-webapp 8080:80
+  ```
+
+* Access the application locally: `curl localhost:8080`
+
+* Visit http://localhost:8080/
+
+* Clean up:
+
+  * Stop the port forwarding
+  * Remove the objects: `kubectl delete pod/demo-webapp`
 
 ## Sidecars
 
