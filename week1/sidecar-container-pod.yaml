@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lottery-app
+  labels:
+    app: lottery-app
+spec:
+  containers:
+  - name: lottery-websvc
+    image: nginx:stable
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: html-content
+      mountPath: /usr/share/nginx/html
+  - name: lottery-generator
+    image: alpine:latest
+    volumeMounts:
+    - name: html-content
+      mountPath: /html
+    command: ["/bin/sh", "-c"]
+    args:
+      - while true; do
+          echo "<html><head><title>Lottery</title></head><body><h1>Tonight's lottery number</h1><p>"`od -vAn -N2 -tu2 < /dev/urandom`"</p></body></html>" > /html/index.html;
+          sleep 15;
+        done
+  volumes:
+  - name: html-content
+    emptyDir: {}

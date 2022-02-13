@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: demo-webapp
+  labels:
+    app: demo-webapp
+spec:
+  containers:
+  - name: pod-nginx
+    image: nginx:stable
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: html-content
+      mountPath: /usr/share/nginx/html
+  initContainers:
+  - name: init-content
+    image: alpine/git:latest
+    volumeMounts:
+    - name: html-content
+      mountPath: /html
+    command: ['sh', '-c', "git clone https://github.com/jeff-anderson-cscc/sample-website.git /html"]
+  volumes:
+  - name: html-content
+    emptyDir: {}
