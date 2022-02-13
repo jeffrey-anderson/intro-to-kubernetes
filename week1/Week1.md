@@ -349,7 +349,7 @@ Explore:
   apiVersion: v1
   kind: Pod
   metadata:
-    name: lottery-app
+    name: prod-lottery-app
     labels:
       app: lottery-app
       environment: production
@@ -388,121 +388,76 @@ Explore:
 
 ## Selectors
 
-More on [deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) next week but for now we will use one to show off selectors. See also:
 * [Resources that support set-based requirements](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#resources-that-support-set-based-requirements)
 * [JSONPath Support](https://kubernetes.io/docs/reference/kubectl/jsonpath/)
 
-deployment-apache-httpd.yaml:
-```
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: deployment-apache-httpd
-spec:
-  selector:
-    matchLabels:
-      app: apache-httpd
-  replicas: 2 # tells deployment to run 2 pods matching the template
-  template:
-    metadata:
-      labels:
-        app: apache-httpd
-    spec:
-      containers:
-      - name: apache-httpd
-        image: httpd:alpine3.15
-        ports:
-        - containerPort: 80
-```
- Apply the deployment:
+Examine and deploy two demo pods
 
- ```
- kubectl apply -f deployment-apache-httpd.yaml
- kubectl get all -o wide --show-labels
- kubectl exec `kubectl get pods -l app=apache-httpd -A -o jsonpath="{.items[0].metadata.name}"` -- wget -q -O - http://localhost
- ```
+* [service-demo-pod-1.yaml](service-demo-pod-1.yaml)
+* [service-demo-pod-2.yaml](service-demo-pod-2.yaml)
 
- Clean up:
- ```
- kubectl delete deployment.apps/deployment-apache-httpd
- ```
+```
+kubectl apply -f service-demo-pod-1.yaml
+kubectl apply -f service-demo-pod-2.yaml
+kubectl get all --show-labels
+```
+
+* Select each using labels:
+  ```
+  kubectl get pods -l app=service-demo-app
+  kubectl get pods -l app.kubernetes.io/version=1.0.0,app=service-demo-app
+  kubectl get pods -l app.kubernetes.io/version=2.0.0,app=service-demo-app
+  ```
+
+* Examine the output of version 1:
+```
+kubectl exec `kubectl get pods -l app.kubernetes.io/version=1.0.0,app=service-demo-app -A -o jsonpath="{.items[0].metadata.name}"` -- curl -vs http://localhost
+```
+
+* Examine the output of version 2:
+```
+kubectl exec `kubectl get pods -l app.kubernetes.io/version=2.0.0,app=service-demo-app -A -o jsonpath="{.items[0].metadata.name}"` -- curl -vs http://localhost
+```
+
+Leave the pods running for the next section.
 
 ## Services 
 
+* [Services, Load Balancing, and Networking](https://kubernetes.io/docs/concepts/services-networking/service/)
+* [Connecting Applications with Services](https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/)
 * [Service](https://kubernetes.io/docs/concepts/services-networking/service/)
 * [Access Services Running on Clusters](https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-services/)
 * Minikube [Accessing apps](https://minikube.sigs.k8s.io/docs/handbook/accessing/)
-* [Services, Load Balancing, and Networking](https://kubernetes.io/docs/concepts/services-networking/service/)
 
-
-demo-webapp-pod.yaml:
-```
-apiVersion: v1
-kind: Pod
-metadata:
-  name: demo-webapp
-  labels:
-    app: demo-webapp
-spec:
-  containers:
-  - name: pod-nginx
-    image: nginx:stable
-    ports:
-    - containerPort: 80
-    volumeMounts:
-    - name: html-content
-      mountPath: /usr/share/nginx/html
-  initContainers:
-  - name: init-content
-    image: alpine/git:latest
-    volumeMounts:
-    - name: html-content
-      mountPath: /html
-    command: ['sh', '-c', "git clone https://github.com/jeff-anderson-cscc/sample-website.git /html"]
-  volumes:
-  - name: html-content
-    emptyDir: {}
-```
-
-Apply the config:
-
- ```
- kubectl apply -f demo-webapp-pod.yaml
- kubectl get all -o wide
- ```
 
 ### Cluster IP
 
 ClusterIP: Exposes the Service on a cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster. This is the default ServiceType.
 
-* Apply [cluster-ip-demo-webapp-svc.yaml](cluster-ip-demo-webapp-svc.yaml) and check:
+* Apply [service-demo-cluster-ip-svc.yaml](service-demo-cluster-ip-svc.yaml) and check:
   ```
-  kubectl apply -f cluster-ip-demo-webapp-svc.yaml
+  kubectl apply -f service-demo-cluster-ip-svc.yaml
   kubectl get all -o wide --show-labels
-  ```
-
-* Access it from inside the container:
-  ```
-  kubectl exec demo-webapp -- curl -s localhost
   ```
 
   In another terminal window run: `kubectl proxy` then access the service via the exposed API endpoint: http://127.0.0.1:8001/api/v1/namespaces/week1/services/demo-webapp-service/proxy/
 
-__NOTE:__ Leave the pod running for the next section.
+__NOTE:__ Stop the `kubectl proxy` process but leave the pods running for the next section.
 
 
 ### NodePort
 
 __NOTE:__ this is the same config as the service above except for the type on the last line.
 
-* Use a specific NodePort (3007) by applying [nodeport-demo-webapp-svc.yaml](nodeport-demo-webapp-svc.yaml). __NOTE:__ this is the same config as the service above except for the nodePort on the second to last line.
+* Use a specific NodePort (3007) by applying [service-demo-nodeport-svc.yaml](service-demo-nodeport-svc.yaml). __NOTE:__ this is the same config as the service above except for the nodePort on the second to last line.
 
-* The bottom of `nodeport-demo-webapp-svc.yaml`:
+* The bottom of `service-demo-nodeport-svc.yaml`:
   ```
   ...
   spec:
     selector:
-      app: demo-webapp
+      app: service-demo-app
+      app.kubernetes.io/name: service-demo-app
     ports:
       - protocol: TCP
         port: 80
@@ -511,34 +466,39 @@ __NOTE:__ this is the same config as the service above except for the type on th
 
 * Apply and run:
   ```
-  kubectl apply -f nodeport-demo-webapp-svc.yaml
+  kubectl apply -f service-demo-nodeport-svc.yaml
   kubectl get all -o wide --show-labels
   minikube service list
   minikube service --url demo-webapp-service -n week1
   ```
 
-* Use a specific NodePort (3007) by applying [port-30007-demo-webapp-svc.yaml](port-30007-demo-webapp-svc.yaml). __NOTE:__ this is the same config as the service above except for the nodePort on the second to last line.
+* Use a specific NodePort (3007) by applying [service-demo-nodeport-30007-svc.yaml](service-demo-nodeport-30007-svc.yaml). __NOTE:__ this is the same config as the service above except for the nodePort on the second to last line.
 
-  The bottom of `port-30007-demo-webapp-svc.yaml`:
+  The bottom of `service-demo-nodeport-30007-svc.yaml`:
   ```
   ...
   spec:
     selector:
-      app: demo-webapp
+      app: service-demo-app
+      app.kubernetes.io/name: service-demo-app
     ports:
       - protocol: TCP
         port: 80
         nodePort: 30007
     type: NodePort
+
   ```
 
 * Apply the update:
   ```
-  kubectl apply -f port-30007-demo-webapp-svc.yaml
+  kubectl apply -f service-demo-nodeport-30007-svc.yaml
   minikube service --url demo-webapp-service -n week1
   ```
 
 * Clean up:
   ```
-  kubectl delete service/demo-webapp-service pod/demo-webapp
+  kubectl get all
+  kubectl delete service/demo-webapp-service
+  kubectl delete pods -l app=service-demo-app
+  kubectl get all
   ```

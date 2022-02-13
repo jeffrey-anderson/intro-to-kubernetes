@@ -4,7 +4,8 @@ metadata:
   name: demo-webapp-service
 spec:
   selector:
-    app: demo-webapp
+    app: service-demo-app
+    app.kubernetes.io/name: service-demo-app
   ports:
     - protocol: TCP
       port: 80
