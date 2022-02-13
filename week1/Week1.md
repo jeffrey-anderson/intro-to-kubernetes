@@ -320,7 +320,7 @@ Explore:
 ## Labeling through configuration
 
 Explore:
-* Add a second label in the config by applying [devl-sidecar-container-pod.yaml](devl-sidecar-container-pod.yaml). Note the additional entry in the `metadata.labels` section:
+* Add a second label in the config by applying [devl-sidecar-container-pod.yaml](devl-sidecar-container-pod.yaml). Note the additional entries in the `metadata.labels` section:
 
   Top of `devl-sidecar-container-pod.yaml`:
   ```
@@ -331,6 +331,9 @@ Explore:
     labels:
       app: lottery-app
       environment: development
+      app.kubernetes.io/name: lottery-app
+      app.kubernetes.io/version: "1.1.0"
+      app.kubernetes.io/component: webapp
   ...    
   ```
   Apply and check:
@@ -350,6 +353,9 @@ Explore:
     labels:
       app: lottery-app
       environment: production
+      app.kubernetes.io/name: lottery-app
+      app.kubernetes.io/version: "1.0.0"
+      app.kubernetes.io/component: webapp
   ...    
   ```
   Apply and check:
