@@ -214,7 +214,7 @@ Explore:
 
 We will use [init-container-pod.yaml](./init-container-pod.yaml) for this demo. Run and connect:
 ```
-kubectl apply -f init-container.yaml
+kubectl apply -f init-container-pod.yaml
 ```
 
 Explore:
@@ -231,7 +231,7 @@ Explore:
 
 * Access the application locally: `curl localhost:8080`
 
-* Visit http://localhost:8080/
+* Visit http://localhost:8080/ refreshing the page if you see the nginx banner from the previous demo.
 
 * Clean up:
 
@@ -250,15 +250,28 @@ Photo credit Saveur - [England's 20-Year-Old 'Two Fat Ladies' is Still the Best 
 We will use [sidecar-container-pod.yaml](sidecar-container-pod.yaml) for this demo. Run and connect:
 ```
 kubectl apply -f sidecar-container-pod.yaml
-kubectl describe pod/lottery-app
-kubectl port-forward lottery-app 8080:80
-curl localhost:8080
 ```
 
-Clean up
-```
-kubectl delete pod/lottery-app
-```
+Explore:
+* Get information about our pod: 
+  ```
+  kubectl describe pod/lottery-app
+  ```
+
+* Use port forwarding in a second terminal window:
+  ```
+  kubectl port-forward lottery-app 8080:80
+  ```
+
+* Access the application locally: `curl localhost:8080`
+
+* Visit http://localhost:8080/ refreshing the page if you see the nginx banner from the previous demo.
+
+* Clean up:
+
+  * Stop the port forwarding
+  * Remove the objects: `kubectl delete pod/lottery-app`
+
 
 ## For further reading 
 
@@ -270,19 +283,41 @@ kubectl delete pod/lottery-app
 * [Recommended Labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/)
 * [Well-Known Labels, Annotations and Taints](https://kubernetes.io/docs/reference/labels-annotations-taints/)
 
-```
-kubectl get nodes --show-labels
-kubectl apply -f sidecar-container-pod.yaml
-kubectl get all --show-labels
-kubectl label -h
-kubectl label pods lottery-app some-key=some-value
-kubectl get pods --show-labels
-kubectl label pods lottery-app some-key=some-other-value
-kubectl label pods lottery-app some-key=some-other-value --overwrite=true
-kubectl get pods --show-labels
-kubectl label pods lottery-app some-key-
-kubectl get pods --show-labels
-```
+Explore:
+* View labels on existing objects:
+  ```
+  kubectl get nodes --show-labels
+  ```
+* Create a new container and examine the labels:
+  ```
+  kubectl apply -f sidecar-container-pod.yaml
+  kubectl get all --show-labels
+  ```
+* Get help on labels:
+  ```
+  kubectl label -h
+  ```
+* Label our new pod:
+  ```
+  kubectl label pods lottery-app some-key=some-value
+  kubectl get pods --show-labels
+  ```
+* Try and change the label:
+  ```
+  kubectl label pods lottery-app some-key=some-other-value
+  ```
+* Fix the error:
+  ```
+  kubectl label pods lottery-app some-key=some-other-value --overwrite=true
+  kubectl get pods --show-labels
+  ```
+* Delete the label:
+  ```
+  kubectl label pods lottery-app some-key-
+  kubectl get pods --show-labels
+  ```
+
+## Labeling through configuration
 
 Explore:
 * Add a second label in the config by applying [devl-sidecar-container-pod.yaml](devl-sidecar-container-pod.yaml). Note the additional entry in the `metadata.labels` section:
