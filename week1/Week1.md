@@ -320,7 +320,7 @@ Explore:
 ## Labeling through configuration
 
 Explore:
-* Add a second label in the config by applying [devl-sidecar-container-pod.yaml](devl-sidecar-container-pod.yaml). Note the additional entries in the `metadata.labels` section:
+* Add an environment label and some additional [recommended labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/) in the config by applying [devl-sidecar-container-pod.yaml](devl-sidecar-container-pod.yaml). Note the additional entries in the `metadata.labels` section:
 
   Top of `devl-sidecar-container-pod.yaml`:
   ```
@@ -342,7 +342,7 @@ Explore:
   kubectl get pods --show-labels
   ```
 
-* Apply [prod-sidecar-container-pod.yaml](prod-sidecar-container-pod.yaml) to create an identical pod with a different label:
+* Apply [prod-sidecar-container-pod.yaml](prod-sidecar-container-pod.yaml) to create a second pod with a different label:
 
   Top of `prod-sidecar-container-pod.yaml`:
   ```
@@ -358,13 +358,26 @@ Explore:
       app.kubernetes.io/component: webapp
   ...    
   ```
-  Apply and check:
+  Apply:
   ```
   kubectl apply -f prod-sidecar-container-pod.yaml
   kubectl get pods --show-labels
-  kubectl get pods -l environment=production
-  kubectl get pods -l environment=development
+  ```
+
+* Query for all pods:
+  ```
   kubectl get pods -l app=lottery-app
+  ```  
+* Query for just production:
+  ```  
+  kubectl get pods -l environment=production
+  ```
+* Query for just development:
+  ```
+  kubectl get pods -l environment=development
+  ```
+* Query for pods in a list:
+  ```  
   kubectl get pods -l 'environment in (production, qa)'
   ```
 
