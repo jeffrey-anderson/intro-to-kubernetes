@@ -1,4 +1,4 @@
-# Week 4: Introduction to Kubernetes
+# Week 1: Introduction to Kubernetes
 
 ## Before we begin
 
@@ -402,92 +402,70 @@ Apply the config:
 
 ClusterIP: Exposes the Service on a cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster. This is the default ServiceType.
 
-cluster-ip-demo-service.yaml
-```
-apiVersion: v1
-kind: Service
-metadata:
-  name: demo-webapp-service
-spec:
-  selector:
-    app: demo-webapp
-  ports:
-    - protocol: TCP
-      port: 80
-  type: ClusterIP  # Not really necessary, this is the default
-```
+* Apply [cluster-ip-demo-webapp-svc.yaml](cluster-ip-demo-webapp-svc.yaml) and check:
+  ```
+  kubectl apply -f cluster-ip-demo-webapp-svc.yaml
+  kubectl get all -o wide --show-labels
+  ```
 
-Apply and check:
-```
-kubectl apply -f demo-webapp-pod.yaml
-kubectl get all -o wide --show-labels
-```
+* Access it from inside the container:
+  ```
+  kubectl exec demo-webapp -- curl -s localhost
+  ```
 
-Access it from inside the container:
-```
-kubectl exec demo-webapp -- curl -s localhost
-```
+  In another terminal window run: `kubectl proxy` then access the service via the exposed API endpoint: http://127.0.0.1:8001/api/v1/namespaces/week1/services/demo-webapp-service/proxy/
 
-In another terminal window run: `kubectl proxy` then access the service via the exposed API endpoint: http://127.0.0.1:8001/api/v1/namespaces/week1/services/demo-webapp-service/proxy/
-
-Leave the pod running for the next section.
+__NOTE:__ Leave the pod running for the next section.
 
 
 ### NodePort
 
 __NOTE:__ this is the same config as the service above except for the type on the last line.
 
-nodeport-demo-service.yaml:
-```
-apiVersion: v1
-kind: Service
-metadata:
-  name: demo-webapp-service
-spec:
-  selector:
-    app: demo-webapp
-  ports:
-    - protocol: TCP
-      port: 80
-  type: NodePort
-```
+* Use a specific NodePort (3007) by applying [nodeport-demo-webapp-svc.yaml](nodeport-demo-webapp-svc.yaml). __NOTE:__ this is the same config as the service above except for the nodePort on the second to last line.
 
-Apply and run:
-```
-kubectl apply -f nodeport-demo-service.yaml
-kubectl get all -o wide --show-labels
-minikube service list
-minikube service --url demo-webapp-service -n week1
-```
+* The bottom of `nodeport-demo-webapp-svc.yaml`:
+  ```
+  ...
+  spec:
+    selector:
+      app: demo-webapp
+    ports:
+      - protocol: TCP
+        port: 80
+    type: NodePort
+  ```
 
-Use a specific NodePort:
+* Apply and run:
+  ```
+  kubectl apply -f nodeport-demo-webapp-svc.yaml
+  kubectl get all -o wide --show-labels
+  minikube service list
+  minikube service --url demo-webapp-service -n week1
+  ```
 
-__NOTE:__ this is the same config as the service above except for the nodePoer on the second to last line.
+* Use a specific NodePort (3007) by applying [port-30007-demo-webapp-svc.yaml](port-30007-demo-webapp-svc.yaml). __NOTE:__ this is the same config as the service above except for the nodePort on the second to last line.
 
-nodeport-demo-service-30007.yaml: 
-```
-apiVersion: v1
-kind: Service
-metadata:
-  name: demo-webapp-service
-spec:
-  selector:
-    app: demo-webapp
-  ports:
-    - protocol: TCP
-      port: 80
-      nodePort: 30007
-  type: NodePort
-```
+  The bottom of `port-30007-demo-webapp-svc.yaml`:
+  ```
+  ...
+  spec:
+    selector:
+      app: demo-webapp
+    ports:
+      - protocol: TCP
+        port: 80
+        nodePort: 30007
+    type: NodePort
+  ```
 
-Apply the update:
-```
-kubectl apply -f nodeport-demo-service-30007.yaml 
-minikube service --url demo-webapp-service -n week1
-```
+* Apply the update:
+  ```
+  kubectl apply -f port-30007-demo-webapp-svc.yaml
+  minikube service --url demo-webapp-service -n week1
+  ```
 
-Clean up:
-```
-kubectl delete service/demo-webapp-service pod/demo-webapp
-```
-
+* Clean up:
+  ```
+  kubectl delete service/demo-webapp-service pod/demo-webapp
+  ```
