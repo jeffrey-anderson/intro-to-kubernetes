@@ -521,7 +521,7 @@ __NOTE:__ this is the same config as the service above except for the type on th
 
 ### Namespaces
 
-* Namespaces provides a mechanism for isolating groups of resources within a single cluster. 
+* Namespaces provide a mechanism for isolating groups of resources within a single cluster. 
 * Names of resources need to be unique within a namespace, but not across namespaces. 
 * Namespace-based scoping is applicable only for namespaced objects (e.g., Deployments, Services, etc.) and not for cluster-wide objects (e.g., StorageClass, Nodes, PersistentVolumes, etc.).
 * Namespaces cannot be nested inside one another, and each Kubernetes resource can only be in one namespace.
@@ -542,6 +542,7 @@ __NOTE:__ this is the same config as the service above except for the type on th
 * Pods are designed to support multiple cooperating processes (as containers) that form a cohesive service unit. 
 * The containers in a Pod are automatically co-located and co-scheduled on the same physical or virtual machine in the cluster. 
 * The containers can share resources and dependencies, communicate with one another, and coordinate when and how they are terminated.
+* Only colocate containers in the same pod if they need to share resources and should be scaled together.
 * Pods natively provide two kinds of shared resources for their constituent containers: [networking](https://kubernetes.io/docs/concepts/workloads/pods/#pod-networking) and [storage](https://kubernetes.io/docs/concepts/workloads/pods/#pod-storage).
 * One rarely creates individual Pods directly in Kubernetes because Pods are designed as relatively ephemeral, disposable entities. 
 * When a Pod gets created, it's scheduled to run on a Node in your cluster where it remains until it finishes execution, is deleted, is evicted for lack of resources, or the node fails.
@@ -583,10 +584,10 @@ __NOTE:__ this is the same config as the service above except for the type on th
 * While the actual Pods that compose the backend set may change, the frontend clients should not need to be aware of that, nor should they need to keep track of the group of backends themselves. The Service abstraction enables this decoupling.
 * In class we explored two [service types](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types), `ClusterIP` and [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport).
 * Key features of `ClusterIP`:
- * It exposes the Service on a cluster-internal IP.
- * Using a `ClusterIP` makes the Service only reachable from within the cluster. 
- * This is the default `ServiceType`.
+  * It exposes the Service on a cluster-internal IP.
+  * Using a `ClusterIP` makes the Service only reachable from within the cluster. 
+  * This is the default `ServiceType`.
 * Key features of `NodePort`:
- * It exposes the Service on each Node's IP at a static port (the NodePort). 
- * The service is exposed outside the cluster through the NodePort Service at <NodeIP>:<NodePort>.
- * Kubernetes automatically creates a ClusterIP Service, to which the NodePort Service routes.
+  * It exposes the Service on each Node's IP at a static port (the NodePort). 
+  * The service is exposed outside the cluster through the NodePort Service at <NodeIP>:<NodePort>.
+  * Kubernetes automatically creates a ClusterIP Service, to which the NodePort Service routes.
