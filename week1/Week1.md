@@ -502,3 +502,91 @@ __NOTE:__ this is the same config as the service above except for the type on th
   kubectl delete pods -l app=service-demo-app
   kubectl get all
   ```
+
+## Summary
+
+### Configuration
+
+* A file used to configure access to a cluster is called a *kubeconfig* file.
+* By default, `kubectl` looks for a file named `config` in the `$HOME/.kube` directory. 
+* You can specify other kubeconfig files by setting the `KUBECONFIG` environment variable or using the `--kubeconfig` flag.
+* The kubeconfig has three parts: *clusters*, *users*, and *contexts*.
+* See [Configure Access to Multiple Clusters](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/) for specifics on how to add clusters to your kubeconfig file.
+
+### Contexts
+
+* Contexts specify the cluster, user, and namespace used when performing operations.
+* You will need at least one context per cluster, but you can specify more than one if you want a quick way to switch between users or namespaces within a cluster.
+* See [Organizing Cluster Access Using kubeconfig Files](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) for more.
+
+### Namespaces
+
+* Namespaces provides a mechanism for isolating groups of resources within a single cluster. 
+* Names of resources need to be unique within a namespace, but not across namespaces. 
+* Namespace-based scoping is applicable only for namespaced objects (e.g., Deployments, Services, etc.) and not for cluster-wide objects (e.g., StorageClass, Nodes, PersistentVolumes, etc.).
+* Namespaces cannot be nested inside one another, and each Kubernetes resource can only be in one namespace.
+* See [Share a Cluster with Namespaces](https://kubernetes.io/docs/tasks/administer-cluster/namespaces/) for more on creating, deleting, and using namespaces.
+
+### The Kubernetes API
+
+* The core of Kubernetes' control plane is the API server. 
+* The API server exposes an HTTP API that lets end-users, different parts of your cluster, and external components communicate with one another.
+* The Kubernetes API lets you query and manipulate the state of API objects in Kubernetes (for example, Pods, Namespaces, ConfigMaps, and Events).
+* You can perform most operations using the [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/) command-line interface or other command-line tools, such as [kubeadm](https://kubernetes.io/docs/reference/setup-tools/kubeadm/), which in turn use the API. However, you can also access the API directly using REST calls.
+* Consider using one of the [client libraries](https://kubernetes.io/docs/reference/using-api/client-libraries/) if you are writing an application using the Kubernetes API.
+* See [The Kubernetes API](https://kubernetes.io/docs/concepts/overview/kubernetes-api/) for more.
+
+### Pods
+
+* Pods are the smallest deployable units of computing that you can create and manage in Kubernetes.
+* Pods are designed to support multiple cooperating processes (as containers) that form a cohesive service unit. 
+* The containers in a Pod are automatically co-located and co-scheduled on the same physical or virtual machine in the cluster. 
+* The containers can share resources and dependencies, communicate with one another, and coordinate when and how they are terminated.
+* Pods natively provide two kinds of shared resources for their constituent containers: [networking](https://kubernetes.io/docs/concepts/workloads/pods/#pod-networking) and [storage](https://kubernetes.io/docs/concepts/workloads/pods/#pod-storage).
+* One rarely creates individual Pods directly in Kubernetes because Pods are designed as relatively ephemeral, disposable entities. 
+* When a Pod gets created, it's scheduled to run on a Node in your cluster where it remains until it finishes execution, is deleted, is evicted for lack of resources, or the node fails.
+* See [Pods](https://kubernetes.io/docs/concepts/workloads/pods/) for more.
+
+### Storage
+
+* A Pod can specify a set of shared storage volumes that are available to all containers in the Pod.
+* We used an [Init Container](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) to download web content from GitHub and save it to an 
+[emptyDir](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) shared volume.
+* In the lottery demo, we used a [Sidecar](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/#example-1-sidecar-containers) container to update a volume shared with a web server dynamically.
+* See [Storage](https://kubernetes.io/docs/concepts/storage/) for more information on how Kubernetes implements shared storage and makes it available to Pods.
+
+### Labels
+
+* Labels are key/value pairs attached to objects, such as pods.
+* Use labels to identify, organize, and group objects in a loosely coupled way.
+* Labels can be attached to objects at creation time and subsequently added and modified at any time. 
+* Each object can have a set of key/value labels defined. 
+* Each key must be unique for a given object.
+* Labels do not provide uniqueness. In general, we expect many objects to carry the same label(s).
+* See [Labels and Selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) for more.
+
+
+### Label selectors
+
+* The label selector is the core grouping primitive in Kubernetes.
+* Clients, users, and objects use selectors to identify a set of objects.
+* The API currently supports two types of selectors: [equality-based](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#equality-based-requirement) and [set-based](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#set-based-requirement).
+* A label selector can be made of multiple requirements which are comma-separated. 
+* In the case of multiple requirements, all must be satisfied, so the comma separator acts as a logical AND (&&) operator.
+* See [Labels and Selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) for more.
+
+
+### Services
+
+* A Service is an abstraction that defines a logical set of Pods and a policy to access them (sometimes this pattern is called a micro-service). 
+* A selector usually determines the set of Pods targeted by a Service.
+* While the actual Pods that compose the backend set may change, the frontend clients should not need to be aware of that, nor should they need to keep track of the group of backends themselves. The Service abstraction enables this decoupling.
+* In class we explored two [service types](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types), `ClusterIP` and [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport).
+* Key features of `ClusterIP`:
+ * It exposes the Service on a cluster-internal IP.
+ * Using a `ClusterIP` makes the Service only reachable from within the cluster. 
+ * This is the default `ServiceType`.
+* Key features of `NodePort`:
+ * It exposes the Service on each Node's IP at a static port (the NodePort). 
+ * The service is exposed outside the cluster through the NodePort Service at <NodeIP>:<NodePort>.
+ * Kubernetes automatically creates a ClusterIP Service, to which the NodePort Service routes.
