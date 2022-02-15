@@ -542,7 +542,7 @@ __NOTE:__ this is the same config as the service above except for the type on th
 * Pods are designed to support multiple cooperating processes (as containers) that form a cohesive service unit. 
 * The containers in a Pod are automatically co-located and co-scheduled on the same physical or virtual machine in the cluster. 
 * The containers can share resources and dependencies, communicate with one another, and coordinate when and how they are terminated.
-* Only colocate containers in the same pod if they need to share resources and should be scaled together.
+* Only co-locate containers in the same Pod if they need to share resources and should be scaled together.
 * Pods natively provide two kinds of shared resources for their constituent containers: [networking](https://kubernetes.io/docs/concepts/workloads/pods/#pod-networking) and [storage](https://kubernetes.io/docs/concepts/workloads/pods/#pod-storage).
 * One rarely creates individual Pods directly in Kubernetes because Pods are designed as relatively ephemeral, disposable entities. 
 * When a Pod gets created, it's scheduled to run on a Node in your cluster where it remains until it finishes execution, is deleted, is evicted for lack of resources, or the node fails.
@@ -558,7 +558,7 @@ __NOTE:__ this is the same config as the service above except for the type on th
 
 ### Labels
 
-* Labels are key/value pairs attached to objects, such as pods.
+* Labels are key/value pairs attached to objects, such as Pods.
 * Use labels to identify, organize, and group objects in a loosely coupled way.
 * Labels can be attached to objects at creation time and subsequently added and modified at any time. 
 * Each object can have a set of key/value labels defined. 
@@ -588,6 +588,6 @@ __NOTE:__ this is the same config as the service above except for the type on th
   * This is the default `ServiceType`.
 * Key features of `NodePort`:
   * It exposes the Service on each Node's IP at a static port (the NodePort). 
-  * The service is exposed outside the cluster through the NodePort Service at `<NodeIP>:<NodePort>`.
-  * Kubernetes automatically creates a corresponding ClusterIP service to internally route traffice from the externally exposed NodePort service.
+  * The Service is exposed outside the cluster through the NodePort Service at `<NodeIP>:<NodePort>`.
+  * Kubernetes automatically creates a corresponding ClusterIP Service to internally route traffic from the externally exposed NodePort Service.
 * See [Services](https://kubernetes.io/docs/concepts/services-networking/service/) for more.
