@@ -572,8 +572,7 @@ __NOTE:__ this is the same config as the service above except for the type on th
 * The label selector is the core grouping primitive in Kubernetes.
 * Clients, users, and objects use selectors to identify a set of objects.
 * The API currently supports two types of selectors: [equality-based](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#equality-based-requirement) and [set-based](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#set-based-requirement).
-* A label selector can be made of multiple requirements which are comma-separated. 
-* In the case of multiple requirements, all must be satisfied, so the comma separator acts as a logical AND (&&) operator.
+* Multiple labels can be in scope for a selector. If so, all must be satisfied to match.
 * See [Labels and Selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) for more.
 
 
@@ -589,5 +588,6 @@ __NOTE:__ this is the same config as the service above except for the type on th
   * This is the default `ServiceType`.
 * Key features of `NodePort`:
   * It exposes the Service on each Node's IP at a static port (the NodePort). 
-  * The service is exposed outside the cluster through the NodePort Service at <NodeIP>:<NodePort>.
-  * Kubernetes automatically creates a ClusterIP Service, to which the NodePort Service routes.
+  * The service is exposed outside the cluster through the NodePort Service at `<NodeIP>:<NodePort>`.
+  * Kubernetes automatically creates a corresponding ClusterIP service to internally route traffice from the externally exposed NodePort service.
+* See [Services](https://kubernetes.io/docs/concepts/services-networking/service/) for more.
