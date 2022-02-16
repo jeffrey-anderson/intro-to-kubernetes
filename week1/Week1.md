@@ -591,3 +591,10 @@ __NOTE:__ this is the same config as the service above except for the type on th
   * The Service is exposed outside the cluster through the NodePort Service at `<NodeIP>:<NodePort>`.
   * Kubernetes automatically creates a corresponding ClusterIP Service to internally route traffic from the externally exposed NodePort Service.
 * See [Services](https://kubernetes.io/docs/concepts/services-networking/service/) for more.
+
+### Resources for debugging
+
+* [Troubleshoot Clusters](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-cluster/)
+* [Troubleshoot Applications](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-application/)
+* [Debug Running Pods](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-running-pod/)
+* [Debugging with container exec](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-running-pod/#container-exec)
