@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: parallel-lottery-job
+spec:
+  completions: 7
+  parallelism: 4
+  template:
+    spec:
+      containers:
+      - name: parallel-lottery-job
+        image: alpine:latest
+        command: ["/bin/sh", "-c"]
+        args: ["echo Tonights lottery number: `od -vAn -N2 -tu2 < /dev/urandom`"]
+      restartPolicy: Never

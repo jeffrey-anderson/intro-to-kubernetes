@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: lottery-cron-job
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            job-class: lottery-number-picker
+        spec:
+          containers:
+          - name: lottery-cron-job
+            image: busybox
+            imagePullPolicy: IfNotPresent
+            command:
+            - /bin/sh
+            - -c
+            - echo "Lottery numbers for `date` are `od -vAn -N14 -tu2 < /dev/urandom`"
+          restartPolicy: OnFailure
