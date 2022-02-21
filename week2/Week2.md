@@ -396,6 +396,7 @@ Explore:
 kubectl get pvc,pv,secrets,pods,svc,statefulset
 kubectl delete statefulset.apps/postgres service/postgres
 kubectl delete secret postgres-db-password
+kubectl delete persistentvolumeclaim/postgres-pv-claim
 kubectl get pvc,pv,secrets,pods,svc,statefulset
 ```
 
@@ -405,85 +406,58 @@ kubectl get pvc,pv,secrets,pods,svc,statefulset
 
 ### Demo using Jeff's three node cluster
 
-```
-kubectl config get-contexts
-kubectl config set-context microk8s-jeff
-kubectl get nodes -o wide
-kubectl get nodes --show-labels
-```
+* View the available contexts:
+  ```
+  kubectl config get-contexts
+  ```
+
+* Switch to the 3 node cluster:
+  ```
+  kubectl config use-context microk8s
+  kubectl create namespace week2
+  kubectl config set-context --current --namespace=week2
+  ```
+
+* Examine the nodes and their labels:
+  ```
+  kubectl get nodes -o wide
+  kubectl get nodes --show-labels
+  ```
 
 * Follow the example in [Writing a DaemonSet Spec](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/#writing-a-daemonset-spec)
-* View the outcome: `kubectl get all --all-namespaces -o wide`
 
-Label the nodes:
-```
-kubectl label nodes kube02 super-power=shapeshifter
-kubectl label nodes kube03 super-power=time-travel
-kubectl label nodes kube04 super-power=shapeshifter
-```
+  ```
+  kubectl apply -f https://k8s.io/examples/controllers/daemonset.yaml
+  ```
+
+* View the outcome: 
+  ```
+  kubectl describe daemonset.apps/fluentd-elasticsearch -n kube-system
+  kubectl get all,nodes --all-namespaces --show-labels
+  ```
+
+* Label the nodes:
+  ```
+  kubectl label nodes kube02 super-power=shapeshifter
+  kubectl label nodes kube03 super-power=time-travel
+  kubectl label nodes kube04 super-power=shapeshifter
+  ```
 
 ### Add a nodeSelector:
 
 * [Running Pods on select Nodes](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/#running-pods-on-select-nodes)
 
-daemonset-shapeshifter.yaml:
-```
-apiVersion: apps/v1
-kind: DaemonSet
-metadata:
-  name: fluentd-elasticsearch
-  namespace: kube-system
-  labels:
-    k8s-app: fluentd-logging
-spec:
-  selector:
-    matchLabels:
-      name: fluentd-elasticsearch
-  template:
-    metadata:
-      labels:
-        name: fluentd-elasticsearch
-    spec:
-      tolerations:
-      # this toleration is to have the daemonset runnable on master nodes
-      # remove it if your masters can't run pods
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
-      nodeSelector:
-        super-power: shapeshifter
-      containers:
-      - name: fluentd-elasticsearch
-        image: quay.io/fluentd_elasticsearch/fluentd:v2.5.2
-        resources:
-          limits:
-            memory: 200Mi
-          requests:
-            cpu: 100m
-            memory: 200Mi
-        volumeMounts:
-        - name: varlog
-          mountPath: /var/log
-        - name: varlibdockercontainers
-          mountPath: /var/lib/docker/containers
-          readOnly: true
-      terminationGracePeriodSeconds: 30
-      volumes:
-      - name: varlog
-        hostPath:
-          path: /var/log
-      - name: varlibdockercontainers
-        hostPath:
-          path: /var/lib/docker/containers
-```
+* Apply our local version of [daemonset-shapeshifter.yaml](daemonset-shapeshifter.yaml) that adds a nodeSelector:
 
-__Apply and explore:__
+  ```
+  kubectl apply -f daemonset-shapeshifter.yaml
+  ```
 
-```
-kubectl apply -f daemonset-shapeshifter.yaml
-kubectl get all --all-namespaces -o wide
-kubectl describe daemonset.apps/fluentd-elasticsearch -n kube-system
-```
+* See how this changed the current state:
+  ```
+  kubectl describe daemonset.apps/fluentd-elasticsearch -n kube-system
+  kubectl get all,nodes --all-namespaces --show-labels
+  ```
 
 ### Clean up:
 
@@ -496,13 +470,14 @@ kubectl label nodes kube04 super-power-
 
 ## Delete the namespace
 
-Optional but deleting the namespace deletes everything in it for a fast, easy cleanup.
+__Optional__ but deleting the namespace deletes everything in it for a fast, easy cleanup.
 
 ```
+kubectl config set-context --current --namespace=default
 kubectl delete namespace week2
 ```
 
-
-# Week 5 Lab
-
-https://github.com/ColumbusStateWorkforceInnovation/infrastructure-kubernetes-part2
+Switch back to my local machine:
+```
+kubectl config use-context minikube
+```
