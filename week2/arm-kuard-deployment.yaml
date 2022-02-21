@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kuard-deployment
+spec:
+  selector:
+    matchLabels:
+      app: app-kuar-demo
+  replicas: 3
+  strategy:
+    type: Recreate  
+  template:
+    metadata:
+      labels:
+        app: app-kuar-demo
+    spec:
+      containers:
+      - image: gcr.io/kuar-demo/kuard-arm64:blue # use -amd64 on Intel or AMD processors
+        name: app-kuar-demo
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "750Mi"
+            cpu: "500m"        
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          periodSeconds: 2
+          initialDelaySeconds: 0
+          failureThreshold: 3
+          successThreshold: 1
+        livenessProbe:
+          httpGet:
+            path: /healthy
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 3  
+        ports:
+        - containerPort: 8080

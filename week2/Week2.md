@@ -170,47 +170,20 @@ A [CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/
 
 * A [ReplicaSet](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/)'s purpose is to maintain a stable set of replica Pods running at any given time. As such, it is often used to guarantee the availability of a specified number of identical Pods.
 
-kuard-rs.yaml:
-```
-apiVersion: apps/v1
-kind: ReplicaSet
-metadata:
-  name: kuard-replica-set
-  labels:
-    app: app-kuar-demo
-spec:
-  # modify replicas according to your case
-  replicas: 3
-  selector:
-    matchLabels:
-      app: app-kuar-demo
-  
-  template:
-    metadata:
-      labels:
-        app: app-kuar-demo
-    
-    spec:
-      containers:
-        - name: app-kuar-demo
-          image: gcr.io/kuar-demo/kuard-arm64:blue # use -amd64 on Intel or AMD processors
-```
+* Run [intel-kuard-rs.yaml](intel-kuard-rs.yaml)
+  ```
+  kubectl apply -f intel-kuard-rs.yaml; watch kubectl get all --show-labels
+  ```
 
-Apply:
-```
-kubectl apply -f kuard-rs.yaml
-kubectl get all --show-labels
-```
+* Shell into a replica and look around:
+  ```
+  kubectl exec -it `kubectl get pods -l app=app-kuar-demo -o jsonpath="{.items[0].metadata.name}"` -- sh
 
-Shell into a replica and look around:
-```
-kubectl exec -it `kubectl get pods -l app=app-kuar-demo -o jsonpath="{.items[0].metadata.name}"` -- sh
-
-$ wget -O - localhost:8080
-$ hostname
-$ wget -O - `hostname`:8080
-$ exit
-```
+  $ wget -O - localhost:8080
+  $ hostname
+  $ wget -O - `hostname`:8080
+  $ exit
+  ```
 
 Explore:
 
@@ -234,34 +207,19 @@ Deployment is an object which can own ReplicaSets and update them and their Pods
 * [LoadBalancer](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer)
 * [Minikube load balancer access](https://minikube.sigs.k8s.io/docs/handbook/accessing/#loadbalancer-access)
 
-kuard-service.yaml
-```
-apiVersion: v1
-kind: Service
-metadata:
-  name: kuard-service
-spec:
-  selector:
-    app: app-kuar-demo
-  ports:
-    - protocol: TCP
-      port: 8080
-  type: LoadBalancer
-```
-
-Apply the config:
+Create a service for our ReplicaSet by creating [kuard-service.yaml](kuard-service.yaml): 
 
 ```
 kubectl apply -f kuard-service.yaml
 kubectl get all
 ```
 
-__NOTE:__ Run `minikube tunnel` in a second terminal window and provide your password when prompted.
+__Note:__ the External IP is "pending". To allocate an IP, in a second terminal window run `minikube tunnel` and provide your password when prompted.
 
-Finding the service IP address:
+Find the service IP address:
 ```
-kubectl get service kuard-service
 kubectl get all -o wide
+kubectl get service kuard-service
 ```
 
 Explore:
@@ -278,68 +236,16 @@ kubectl delete replicaset.apps/kuard-replica-set
 ## Deployment
 
 * A [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) provides declarative updates for Pods and ReplicaSets.
-
-__NOTE:__ Make sure the ReplicaSet from the previous section is not running:
-```
-kubectl delete replicaset.apps/kuard-replica-set
-```
-
-kuard-deployment.yaml
-```
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: kuard-deployment
-spec:
-  selector:
-    matchLabels:
-      app: app-kuar-demo
-  replicas: 3
-  strategy:
-    type: Recreate  
-  template:
-    metadata:
-      labels:
-        app: app-kuar-demo
-    spec:
-      containers:
-      - image: gcr.io/kuar-demo/kuard-arm64:blue # use -amd64 on Intel or AMD processors
-        name: app-kuar-demo
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "250m"
-          limits:
-            memory: "750Mi"
-            cpu: "500m"        
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 8080
-          periodSeconds: 2
-          initialDelaySeconds: 0
-          failureThreshold: 3
-          successThreshold: 1
-        livenessProbe:
-          httpGet:
-            path: /healthy
-            port: 8080
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
-          periodSeconds: 10
-          failureThreshold: 3  
-        ports:
-        - containerPort: 8080
-```
-
-See also:
 * [Deployment strategy](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy)
 * [Resource Management for Pods and Containers](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)
 * [Configure Liveness, Readiness and Startup Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
 
-Apply the config:
+__NOTE:__ Make sure the ReplicaSet from the previous section is not running:
+
+
+Apply [intel-kuard-deployment.yaml](intel-kuard-deployment.yaml):
 ```
-kubectl apply -f kuard-deployment.yaml; watch kubectl get all -o wide
+kubectl apply -f intel-kuard-deployment.yaml; watch kubectl get all
 kubectl get all -o wide --show-labels
 kubectl describe deployment.apps/kuard-deployment
 ```
@@ -404,9 +310,11 @@ Explore:
 
 
 ### Clean up:
-```
-kubectl delete services,deployments --all
-```
+* Quit the `minikube tunnel` started earler.
+* Delete the resources:
+  ```
+  kubectl delete services,deployments --all
+  ```
 
 
 ## Secrets
@@ -428,90 +336,25 @@ kubectl describe secret postgres-db-password
 * [Run a Single-Instance Stateful Application](https://kubernetes.io/docs/tasks/run-application/run-single-instance-stateful-application/)
 * [PersistentVolumeClaims](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims)
 
+__NOTE:__ Persistent volume claims do not get automatically deleted. Run `kubectl get sts,pvc` and make sure it reports "No resources found". If if any resources appear, delete them.
 
-postgres-stateful-set.yaml:
-```
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgres
-spec:
-  ports:
-  - port: 5432
-    nodePort: 30432  
-  type: NodePort  
-  selector:
-    app: postgres
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-pv-claim
-spec:
-  storageClassName: standard
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: postgres
-spec:
-  selector:
-    matchLabels:
-      app: postgres
-  serviceName: "postgres"
-  replicas: 1 
-  minReadySeconds: 10
-  template:
-    metadata:
-      labels:
-        app: postgres
-    spec:
-      terminationGracePeriodSeconds: 10
-      containers:
-      - image: postgres
-        name: postgres
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "250m"
-          limits:
-            memory: "750Mi"
-            cpu: "500m"            
-        env:
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: postgres-db-password
-              key: password
-        ports:
-        - containerPort: 5432
-          name: postgres
-        volumeMounts:
-        - name: postgres-persistent-storage
-          mountPath: /var/lib/postgresql/data
-      volumes:
-      - name: postgres-persistent-storage
-        persistentVolumeClaim:
-          claimName: postgres-pv-claim
-```
 
-Apply:
-```
-kubectl apply -f postgres-stateful-set.yaml
-kubectl get all
-kubectl get pvc,pv,secrets,pods,svc,statefulset
-minikube service list
-```
+* Apply [postgres-sts.yaml](postgres-sts.yaml):
+  ```
+  kubectl apply -f postgres-sts.yaml; watch kubectl get all,pvc,pv -o wide
+  ```
+
+* Inspect the objects:
+  ```
+  kubectl get all
+  kubectl get pvc,pv,secrets,pods,svc,statefulset
+  minikube service list
+  ```
 
 Explore:
 * Using a SQL client like [DBeaver](https://dbeaver.io/download/), connect to the database using the password "Use-a-Better-Passw0rd" along with the IP address and port number from the service list above:
 
-![A screenshot of the DBeaver connection dialog box](https://user-images.githubusercontent.com/46822968/152623068-12d2ab50-7f4f-4088-8485-1716b4cfb1f1.png)
+  ![A screenshot of the DBeaver connection dialog box](https://user-images.githubusercontent.com/46822968/152623068-12d2ab50-7f4f-4088-8485-1716b4cfb1f1.png)
 
 * Verify this query `select * from products;` fails with a products table does not exist error.
 * Run this script in a new SQL Editor:
