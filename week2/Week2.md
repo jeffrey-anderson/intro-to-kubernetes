@@ -19,8 +19,7 @@ kubectl config set-context --current --namespace=week2
 
 * Run the [Pi example job](https://kubernetes.io/docs/concepts/workloads/controllers/job/#running-an-example-job)
   ```
-  kubectl apply -f pi-job.yaml
-  watch kubectl get all
+  kubectl apply -f pi-job.yaml; watch kubectl get all
   ```
 
 * Explore:
@@ -35,8 +34,7 @@ kubectl config set-context --current --namespace=week2
 
 * Create our own job from [lottery-job.yaml](./lottery-job.yaml):
   ```
-  kubectl apply -f lottery-job.yaml
-  watch kubectl get all
+  kubectl apply -f lottery-job.yaml; watch kubectl get all
   ```
 
 * View the output:
@@ -52,8 +50,7 @@ See [Parallel execution for Jobs](https://kubernetes.io/docs/concepts/workloads/
  
 * Apply and wait for 7 pods to appear with a completed status:
   ```
-  kubectl apply -f parallel-lottery-job.yaml
-  watch kubectl get all
+  kubectl apply -f parallel-lottery-job.yaml; watch kubectl get all
   ```
 
 * View the details:
@@ -85,8 +82,7 @@ Explore:
 
 * Now rerun the job: 
   ```
-  kubectl apply -f parallel-lottery-job.yaml
-  watch kubectl get all
+  kubectl apply -f parallel-lottery-job.yaml; watch kubectl get all
   ``` 
 
 * Print out the job names:
@@ -115,8 +111,7 @@ A [CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/
 
 * Apply [lottery-cronjob.yaml](lottery-cronjob.yaml), run and check the logs:
   ```
-  kubectl apply -f lottery-cronjob.yaml
-  watch kubectl get all --show-labels
+  kubectl apply -f lottery-cronjob.yaml; watch kubectl get all --show-labels
   ```
   __NOTE:__ It will take up to one minute for output to appear.
 
@@ -132,8 +127,7 @@ A [CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/
 
 * Use parallelism for our lotter cronjob. Apply [parallel-lottery-cronjob.yaml](parallel-lottery-cronjob.yaml):
   ```
-  kubectl apply -f parallel-lottery-cronjob.yaml
-  watch kubectl get all --show-labels
+  kubectl apply -f parallel-lottery-cronjob.yaml; watch kubectl get all --show-labels
   ```
   __NOTE:__ It will take up to one minute for new jobs to appear.
 
