@@ -42,6 +42,23 @@ kubectl config set-context --current --namespace=week2
   for pod in `kubectl get pods -l job-name=lottery-job -A -o jsonpath="{.items[*].metadata.name}"`; do echo "Pod $pod:"; kubectl logs $pod; done
   ```
 
+* Attempt to rerun the job: 
+  ```
+  kubectl apply -f lottery-job.yaml
+  kubectl create -f lottery-job.yaml
+  ```
+
+* Remove the terminated job: 
+  ```
+  kubectl delete -f lottery-job.yaml
+  ```
+
+* Now rerun the job: 
+  ```
+  kubectl create -f lottery-job.yaml; watch kubectl get all
+  ``` 
+
+
 ### Parallel jobs
 
 See [Parallel execution for Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/job/#parallel-jobs) for more.
@@ -73,6 +90,7 @@ Explore:
 * Attempt to rerun the job: 
   ```
   kubectl apply -f parallel-lottery-job.yaml
+  kubectl create -f parallel-lottery-job.yaml
   ```
 
 * Remove the terminated job: 
