@@ -2,6 +2,7 @@
 
 * [Workloads](https://kubernetes.io/docs/concepts/workloads/)
 
+
 ## Getting started:
 
 Update the current context to use a new namespace:
@@ -27,7 +28,7 @@ kubectl config set-context --current --namespace=week2
   kubectl describe jobs/pi
   ```
 
-* View the output
+* View the output using [JSONPath](https://kubernetes.io/docs/reference/kubectl/jsonpath/):
   ```
   kubectl logs `kubectl get pods --selector=job-name=pi --output=jsonpath='{.items[*].metadata.name}'`
   ```
@@ -88,7 +89,7 @@ Explore:
   watch kubectl get all
   ``` 
 
-* Print out the job names using [JSONPath](https://kubernetes.io/docs/reference/kubectl/jsonpath/):
+* Print out the job names:
   ```
   kubectl get pods -o jsonpath='{range .items[*]}{@.status.podIP}{" "}{@.metadata.name}{"\n"}{end}'
   ```
@@ -636,6 +637,14 @@ kubectl delete daemonset.apps/fluentd-elasticsearch -n kube-system
 kubectl label nodes kube02 super-power-
 kubectl label nodes kube03 super-power-
 kubectl label nodes kube04 super-power-
+```
+
+## Delete the namespace
+
+Optional but deleting the namespace deletes everything in it for a fast, easy cleanup.
+
+```
+kubectl delete namespace week2
 ```
 
 
