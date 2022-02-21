@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: parallel-lottery-cron-job
+spec:
+  schedule: "* * * * *"
+  concurrencyPolicy: Allow  
+  jobTemplate:
+    spec:
+      parallelism: 2
+      template:
+        metadata:
+          labels:
+            job-class: parallel-lottery-number-picker
+        spec:
+          containers:
+          - name: parallel-lottery-cron-job
+            image: busybox
+            imagePullPolicy: IfNotPresent
+            command:
+            - /bin/sh
+            - -c
+            - echo "Lottery numbers for `date` are `od -vAn -N16 -tu2 < /dev/urandom`"
+          restartPolicy: OnFailure

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: kuard-replica-set
+  labels:
+    app: app-kuar-demo
+spec:
+  # modify replicas according to your case
+  replicas: 3
+  selector:
+    matchLabels:
+      app: app-kuar-demo
+  
+  template:
+    metadata:
+      labels:
+        app: app-kuar-demo
+    
+    spec:
+      containers:
+        - name: app-kuar-demo
+          image: gcr.io/kuar-demo/kuard-amd64:blue # use -amd64 on Intel or AMD processors

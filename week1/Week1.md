@@ -25,7 +25,7 @@ kubectl config current-context
 kubectl config use-context minikube
 ```
 
-![Kubernetes architecture](https://user-images.githubusercontent.com/46822968/150684180-8550b242-6bef-40f5-80d4-f4ae4fcc34b3.png)
+![Kubernetes architecture](../images/kube-architecture.png)
 
 Figure 11.1. Kubernetes components of the Control Plane and the worker nodes from Kubernetes in Action. 
 
