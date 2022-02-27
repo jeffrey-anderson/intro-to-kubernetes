@@ -1,13 +1,5 @@
 # Kubernetes
 
-## Background
-
-* [What is Kubernetes?](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
-* [The History of Kubernetes on a Timeline](https://blog.risingstack.com/the-history-of-kubernetes/)
-* [The History of Kubernetes & the Community Behind It](https://kubernetes.io/blog/2018/07/20/the-history-of-kubernetes-the-community-behind-it/)
-* [Cloud Native Computing Foundation](https://www.cncf.io/)
-* [Cluster Architecture](https://kubernetes.io/docs/concepts/architecture/)
-
 ## Getting started
 
 * [Kubernetes Tools](https://kubernetes.io/docs/tasks/tools/)
@@ -20,13 +12,15 @@
 
 ## In-class demos
 
-* [Week 1](week1/Week1.md)
-* [Week 2](week2/Week2.md)
+* [Introduction to Kubernetes](intro/Intro.md)
+* [Kubernetes Workloads](workloads/Workloads.md)
 
 
 ## What is Kubernetes?
 
 > Kubernetes is a portable, extensible, open-source platform for managing containerized workloads and services that facilitate declarative configuration and automation. It has a large, rapidly growing ecosystem. Kubernetes services, support, and tools are widely available.<sup>1</sup>
+
+See [What is Kubernetes?](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/) for more.
 
 ## History of Kubernetes
 
@@ -43,6 +37,8 @@
 For more, see:
 * [The History of Kubernetes on a Timeline](https://blog.risingstack.com/the-history-of-kubernetes/)
 * Kubernetes [release timeline](https://en.wikipedia.org/wiki/Kubernetes#Release_timeline) on Wikipedia.
+* [The History of Kubernetes & the Community Behind It](https://kubernetes.io/blog/2018/07/20/the-history-of-kubernetes-the-community-behind-it/)
+
 
 ## Benefits of using Kubernetes
 
@@ -58,6 +54,9 @@ Kubernetes provides you with:<sup>1</sup>
 ## Kubernetes Architecture
 
 ![Kubernetes architecture](images/kube-architecture.png)
+
+See [Cluster Architecture](https://kubernetes.io/docs/concepts/architecture/) for more.
+
 
 ## Node types
 
@@ -142,3 +141,7 @@ The Kubernetes Container Runtime Interface (CRI) defines the main [gRPC](https:/
 
 ## References:
 1. [What is Kubernetes?](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
+
+## License
+
+This work is Copyright &copy; 2022 by Jeffrey Allen Anderson and made available under the [MIT license](https://opensource.org/licenses/MIT). See [LICENSE](./LICENSE.md) for the full license text.

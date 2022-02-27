@@ -7,8 +7,8 @@
 
 Update the current context to use a new namespace:
 ```
-kubectl create namespace week2
-kubectl config set-context --current --namespace=week2
+kubectl create namespace workloads
+kubectl config set-context --current --namespace=workloads
 ```
 
 ## Job
@@ -414,8 +414,8 @@ kubectl get pvc,pv,secrets,pods,svc,statefulset
 * Switch to the 3 node cluster:
   ```
   kubectl config use-context microk8s
-  kubectl create namespace week2
-  kubectl config set-context --current --namespace=week2
+  kubectl create namespace workloads
+  kubectl config set-context --current --namespace=workloads
   ```
 
 * Examine the nodes and their labels:
@@ -474,7 +474,7 @@ __Optional__ but deleting the namespace deletes everything in it for a fast, eas
 
 ```
 kubectl config set-context --current --namespace=default
-kubectl delete namespace week2
+kubectl delete namespace workloads
 ```
 
 Switch back to my local machine:

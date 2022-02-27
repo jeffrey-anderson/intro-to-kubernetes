@@ -6,7 +6,7 @@ metadata:
     app: app-kuar-demo
 spec:
   # modify replicas according to your case
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: app-kuar-demo
