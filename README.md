@@ -141,3 +141,7 @@ The Kubernetes Container Runtime Interface (CRI) defines the main [gRPC](https:/
 
 ## References:
 1. [What is Kubernetes?](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
+
+## License
+
+This work is Copyright &copy; 2022 by Jeffrey Allen Anderson and made available under the [MIT license](https://opensource.org/licenses/MIT). See [LICENSE](./LICENSE.md) for the full license text.
