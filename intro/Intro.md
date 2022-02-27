@@ -1,4 +1,4 @@
-# Week 1: Introduction to Kubernetes
+# Introduction to Kubernetes
 
 ## Before we begin
 
@@ -116,8 +116,8 @@ Explore:
 
 * Update the current context to use a new namespace:
   ```
-  kubectl create namespace week1
-  kubectl config set-context --current --namespace=week1
+  kubectl create namespace intro2k8s
+  kubectl config set-context --current --namespace=intro2k8s
   kubectl config get-contexts
   kubectl config set-context --current --namespace=default
   kubectl config get-contexts
@@ -138,7 +138,7 @@ Explore:
   kubectl config get-contexts
   kubectl get namespaces
   kubectl delete namespace hello-kube
-  kubectl config set-context --current --namespace=week1
+  kubectl config set-context --current --namespace=intro2k8s
   kubectl config get-contexts
   ```
 
@@ -440,7 +440,7 @@ ClusterIP: Exposes the Service on a cluster-internal IP. Choosing this value mak
   kubectl get all -o wide --show-labels
   ```
 
-  In another terminal window run: `kubectl proxy` then access the service via the exposed API endpoint: http://127.0.0.1:8001/api/v1/namespaces/week1/services/demo-webapp-service/proxy/
+  In another terminal window run: `kubectl proxy` then access the service via the exposed API endpoint: http://127.0.0.1:8001/api/v1/namespaces/intro2k8s/services/demo-webapp-service/proxy/
 
 __NOTE:__ Stop the `kubectl proxy` process but leave the pods running for the next section.
 
@@ -469,7 +469,7 @@ __NOTE:__ this is the same config as the service above except for the type on th
   kubectl apply -f service-demo-nodeport-svc.yaml
   kubectl get all -o wide --show-labels
   minikube service list
-  minikube service --url demo-webapp-service -n week1
+  minikube service --url demo-webapp-service -n intro2k8s
   ```
 
 * Use a specific NodePort (3007) by applying [service-demo-nodeport-30007-svc.yaml](service-demo-nodeport-30007-svc.yaml). __NOTE:__ this is the same config as the service above except for the nodePort on the second to last line.
@@ -492,7 +492,7 @@ __NOTE:__ this is the same config as the service above except for the type on th
 * Apply the update:
   ```
   kubectl apply -f service-demo-nodeport-30007-svc.yaml
-  minikube service --url demo-webapp-service -n week1
+  minikube service --url demo-webapp-service -n intro2k8s
   ```
 
 * Clean up:
