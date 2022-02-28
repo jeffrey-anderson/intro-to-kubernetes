@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: swe-api-service
+  namespace: swe
+spec:
+  selector:
+    app: swe-app-api
+  ports:
+    - protocol: TCP
+      port: 3000
+  type: LoadBalancer

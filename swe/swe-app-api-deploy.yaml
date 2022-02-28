@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: swe-app-api
+  namespace: swe
+spec:
+  selector:
+    matchLabels:
+      app: swe-app-api
+  replicas: 2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: swe-app-api
+    spec:
+      containers:
+      - image: datadaddy/swe-api-k8s:0.1
+        imagePullPolicy: Always
+        name: swe-app-api
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-db-password
+              key: password
+        - name: POSTGRES_DB_URL
+          value: jdbc:postgresql://postgres.swe.svc.cluster.local:5432/postgres
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "750Mi"
+            cpu: "500m"        
+        ports:
+        - containerPort: 3000
