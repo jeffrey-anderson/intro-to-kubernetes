@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: swe-vue-app
+  namespace: swe
+spec:
+  selector:
+    matchLabels:
+      app: swe-vue-app
+  replicas: 3
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: swe-vue-app
+    spec:
+      containers:
+      - image: datadaddy/swe-vue-k8s:01
+        imagePullPolicy: Always
+        name: swe-vue-app
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "750Mi"
+            cpu: "500m"        
+        ports:
+        - containerPort: 80

@@ -5,6 +5,11 @@
 
 ## Getting started:
 
+Enable the metrics API, so we can use it later: 
+```
+minikube addons enable metrics-server
+```
+
 Update the current context to use a new namespace:
 ```
 kubectl create namespace workloads
@@ -257,7 +262,6 @@ Explore:
 * Disable caching and refresh. Notice the host name and IP address
 * In the command window, run `watch kubectl get all -o wide`. With the watch output running, Click on the "Liveness Probe" tab then click on the "Fail" link.
 * With the watch output still running, Click on the "Readiness Probe" tab then click on the "10" link.
-* Enable the metrics API: `minikube addons enable metrics-server`
 * Watch CPU and memory in use: `watch kubectl top pods`
 * With the watch output still running, Click on the "KeyGen Workload" tab, enable it and click submit.
 * With the watch output still running, Click on the "Memory" tab then click on "Allocate 500 MiB" link.

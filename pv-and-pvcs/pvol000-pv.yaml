@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvol000
+spec:
+  storageClassName: pvol000-storage-class
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 50Gi
+  hostPath:
+    path: /data/pvol000/
