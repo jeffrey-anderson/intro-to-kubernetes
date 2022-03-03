@@ -4,6 +4,10 @@ Deploy the API and front end website from [Spring Web Essentials](https://leanpu
 
 [![Cover of Spring Web Essentials](https://d2sofvawe08yqg.cloudfront.net/springwebessentials/s_hero?1620626184)](https://leanpub.com/springwebessentials)
 
+## Architecture Overview
+
+![Architecture overview of the Spring Web Essentials application](../images/swe-k8s-arch.drawio.png)
+
 ## Give it a unique namespace:
 
 Apply [swe-ns.yaml](./swe-ns.yaml): 
@@ -23,7 +27,7 @@ Apply [postgres-db-password-secret.yaml](postgres-db-password-secret.yaml):
 kubectl apply -f postgres-db-password-secret.yaml
 ```
 
-**NOTE:** While the password may look encrypted, it is only encoded and easily be decoded. DO NOT check passwords and other secrets into version control. 
+**NOTE:** While the password may look encrypted, it is only encoded and easily be decoded. DO NOT check passwords and other secrets into version control unless it's private and access is extremely limited. 
 
 ```
 echo VXNlLWEtQmV0dGVyLVBhc3N3MHJk | base64 --decode
@@ -31,12 +35,16 @@ echo VXNlLWEtQmV0dGVyLVBhc3N3MHJk | base64 --decode
 
 ## Deploy a PostgreSQL StatefulSet for the API to use:
 
+* [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/)
+
 Apply [postgres-sts.yaml](postgres-sts.yaml): 
 ```
 kubectl apply -f postgres-sts.yaml
 minikube service list
 ```
-
+Notes:
+* The use of an [InitContainer](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) to prepopulate the database with example content for the application.
+* The `volumeClaimTemplates` will provide stable storage using PersistentVolumes provisioned by a [PersistentVolume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) Provisioner.
 
 ## Deploy an API that uses the database:
 
