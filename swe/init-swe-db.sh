@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
 drop table if exists BLOG_POST;
 drop table if exists AUTHOR;
 
@@ -15,3 +19,4 @@ mignon leberkas picanha pork chop. Alcatra swine short ribs, burgdoggen capicola
 m. Rump leberkas ground round tongue short loin ham hock venison shoulder pig meatball chuck pork loin picanha doner. Flank tongue shank, strip steak
  ribeye pork cow bacon tail. Frankfurter hamburger bresaola andouille t-bone buffalo pancetta cow chuck pork pastrami tail prosciutto. Filet mignon l
 andjaeger flank frankfurter bacon.', now(), 'Gooey Chocolate Crumble with Espresso', 2 );
+EOSQL
