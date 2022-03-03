@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+psql -v ON_ERROR_STOP=1 --username postgres --dbname postgres <<-EOSQL
 DROP TABLE if exists public.blog_post;
 DROP TABLE if exists public.author;
 
