@@ -11,20 +11,6 @@ spec:
   selector:
     app: postgres
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-pv-claim
-  namespace: swe
-spec:
-  #storageClassName: standard
-  storageClassName: microk8s-hostpath
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -43,6 +29,16 @@ spec:
         app: postgres
     spec:
       terminationGracePeriodSeconds: 10
+      volumes:
+      - name: init-scripts
+        emptyDir: {}          
+      initContainers:
+        - name: init-sql
+          image: busybox:stable
+          volumeMounts:
+          - name: init-scripts
+            mountPath: /sql
+          command: ['sh', '-c', "wget -q -O /sql/init-swe-db.sh https://raw.githubusercontent.com/jeffrey-anderson/intro-to-kubernetes/main/swe/init-swe-db.sh 2> /dev/null"]
       containers:
       - image: postgres
         name: postgres
@@ -63,9 +59,18 @@ spec:
         - containerPort: 5432
           name: postgres
         volumeMounts:
-        - name: postgres-persistent-storage
+        - name: postgres-data
           mountPath: /var/lib/postgresql/data
-      volumes:
-      - name: postgres-persistent-storage
-        persistentVolumeClaim:
-          claimName: postgres-pv-claim
+        - name: init-scripts
+          mountPath: /docker-entrypoint-initdb.d
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+      namespace: swe
+    spec:
+      storageClassName: standard
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi
