@@ -74,7 +74,7 @@ Explore:
   ```
 
 * In DBeaver, reconnect to the database
-* Verify the table still exisits and has data: `select * from products;`
+* Verify the table still exists and has data: `select * from products;`
 * Quit DBeaver
 
 ## Clean up

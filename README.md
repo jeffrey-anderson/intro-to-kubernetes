@@ -12,8 +12,18 @@
 
 ## In-class demos
 
-* [Introduction to Kubernetes](intro/Intro.md)
-* [Kubernetes Workloads](workloads/Workloads.md)
+* [Introduction to Kubernetes](intro/README.md)
+* [Kubernetes Workloads](workloads/README.md)
+* [More on storage](./pv-and-pvcs/README.md)
+  * Mounting secrets as storage
+* More on configuration
+  * ConfigMap
+* Debugging
+  * https://github.com/ColumbusStateWorkforceInnovation/infrastructure-kubernetes-week3-examples/tree/master/debugging
+  * https://github.com/ColumbusStateWorkforceInnovation/infrastructure-kubernetes-week4-examples/blob/master/debugging-applications.md
+* Deploying complex apps:
+  * [Spring Web Essentials](./swe/README.md)
+  * [PHP Guestbook Application with Redis](https://github.com/ColumbusStateWorkforceInnovation/infrastructure-kubernetes-week4-examples/blob/master/example-application.md)
 
 
 ## What is Kubernetes?
