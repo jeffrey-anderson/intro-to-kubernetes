@@ -90,17 +90,51 @@ kubectl get pvc,pv,pods,svc,deployment
 kubectl delete persistentvolume/pvol000
 ```
 
-# Passing configuration as volumes
+# Passing configuration as file data
 
+## Using ephemeral volumes
 
-
-## Projected Volumes
+Mount various configuration data using different volumes into multiple directories
 
 References:
-* [Projected Volumes](https://kubernetes.io/docs/concepts/storage/projected-volumes/)
+* [Ephemeral Volumes](https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/)
 * [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
 * [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
 * [Expose Pod Information to Containers Through Files](https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/)
+
+Apply [ephemeral-vol-test-pod.yaml](./ephemeral-vol-test-pod.yaml):
+```
+kubectl apply -f ephemeral-vol-test-pod.yaml
+kubectl get all,cm,secrets
+```
+
+Explore:
+* Shell in and look around with `kubectl exec -it ephemeral-vol-test -- /bin/sh` or run the commands below:
+
+  ```
+  kubectl exec -it ephemeral-vol-test -- ls -lR /configuration/
+
+  kubectl exec -it ephemeral-vol-test -- find /configuration/ -type f -exec echo "contents of" {} ":" \; -exec cat {} \; -exec echo "" \;
+  ```
+
+* Clean up:
+
+  ```
+  kubectl get all,cm,secrets
+
+  kubectl delete pod/ephemeral-vol-test
+  kubectl delete secret db-secrets
+  kubectl delete configmap/config-map-demo
+  ```
+
+
+## Using Projected volumes
+
+Mount various configuration data using projected volumes into a common directory
+
+
+References:
+* [Projected Volumes](https://kubernetes.io/docs/concepts/storage/projected-volumes/)
 
 Apply [projected-vol-test-pod.yaml](projected-vol-test-pod.yaml):
 
