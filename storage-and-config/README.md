@@ -141,6 +141,9 @@ Explore:
 * Clean up:
 
   ```
-  kubectl delete secret db-secrets
+  kubectl get all,pv,cm,secrets
+
   kubectl delete pod projected-vol-test
+  kubectl delete secret db-secrets
+  kubectl delete configmap/config-map-demo
   ```
