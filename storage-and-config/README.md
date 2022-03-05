@@ -143,27 +143,33 @@ kubectl apply -f projected-vol-test-pod.yaml
 ```
 
 Explore:
-* Shell in and look around with `kubectl exec -it projected-vol-test -- /bin/sh` or run the commands below:
+* Shell in and look around with `kubectl exec -it projected-vol-test -- /bin/sh` or run the commands below.
 
   ```
   kubectl exec -it projected-vol-test -- ls -lR /configuration/
   kubectl exec -it projected-vol-test -- ls -lR /configuration/..data/
   ```
-* Examine the secrets:
+
+* Print the file name and contents of all configuration data:
+  ```
+  kubectl exec -it projected-vol-test -- find /configuration/ -type f -exec echo "contents of" {} ":" \; -exec cat {} \; -exec echo "" \;
+  ```
+
+* Examine only the secrets:
 
   ```
   kubectl exec -it projected-vol-test -- cat /configuration/db/password; echo ""
   kubectl exec -it projected-vol-test -- cat /configuration/db/username; echo ""
   ```
 
-* Examine config from downwardAPI:
+* Examine only the config from downwardAPI:
 
   ```
   kubectl exec -it projected-vol-test -- cat /configuration/cpu_limit; echo ""
   kubectl exec -it projected-vol-test -- cat /configuration/..data/labels; echo ""
   ```
 
-* Examine config from the ConfigMap:
+* Examine only the config from the ConfigMap:
 
   ```
   kubectl exec -it projected-vol-test -- cat /configuration/..data/home_track; echo ""
