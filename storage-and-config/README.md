@@ -1,5 +1,7 @@
 # More on Storage
 
+* Kubernetes [Storage documentation](https://kubernetes.io/docs/concepts/storage/).
+
 ## PersistentVolume
 
 * [Kubernetes.io Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
@@ -87,3 +89,58 @@ kubectl delete persistentvolumeclaim/pvol000-pv-claim
 kubectl get pvc,pv,pods,svc,deployment
 kubectl delete persistentvolume/pvol000
 ```
+
+# Passing configuration as volumes
+
+
+
+## Projected Volumes
+
+References:
+* [Projected Volumes](https://kubernetes.io/docs/concepts/storage/projected-volumes/)
+* [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
+* [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
+* [Expose Pod Information to Containers Through Files](https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/)
+
+Apply [projected-vol-test-pod.yaml](projected-vol-test-pod.yaml):
+
+```
+kubectl apply -f projected-vol-test-pod.yaml
+```
+
+Explore:
+* Shell in and look around with `kubectl exec -it projected-vol-test -- /bin/sh` or run the commands below:
+
+  ```
+  kubectl exec -it projected-vol-test -- ls -lR /configuration/
+  kubectl exec -it projected-vol-test -- ls -lR /configuration/..data/
+  kubectl exec -it projected-vol-test -- ls -l /configuration/db/
+  ```
+* Examine the secrets:
+
+  ```
+  kubectl exec -it projected-vol-test -- cat /configuration/db/password; echo ""
+  kubectl exec -it projected-vol-test -- cat /configuration/db/username; echo ""
+  ```
+
+* Examine config from downwardAPI:
+
+  ```
+  kubectl exec -it projected-vol-test -- cat /configuration/cpu_limit; echo ""
+  kubectl exec -it projected-vol-test -- cat /configuration/..data/labels; echo ""
+  ```
+
+* Examine config from the ConfigMap:
+
+  ```
+  kubectl exec -it projected-vol-test -- cat /configuration/..data/home_track; echo ""
+  kubectl exec -it projected-vol-test -- cat /configuration/..data/meaning_of_life; echo ""
+  kubectl exec -it projected-vol-test -- cat /configuration/..data/race.properties; echo ""
+  ```
+
+* Clean up:
+
+  ```
+  kubectl delete secret db-secrets
+  kubectl delete pod projected-vol-test
+  ```
