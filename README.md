@@ -14,9 +14,7 @@
 
 * [Introduction to Kubernetes](intro/README.md)
 * [Kubernetes Workloads](workloads/README.md)
-* [More on storage](./pv-and-pvcs/README.md)
-  * [Projected Volumes](https://kubernetes.io/docs/concepts/storage/projected-volumes/)
-  * Mounting secrets as storage
+* [More on storage and config](./storage-and-config/README.md)
 * More on configuration
   * [Configuration Best Practices](https://kubernetes.io/docs/concepts/configuration/overview/)
   * [Configure a Pod to Use a ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)

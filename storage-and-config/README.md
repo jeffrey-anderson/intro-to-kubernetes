@@ -114,7 +114,6 @@ Explore:
   ```
   kubectl exec -it projected-vol-test -- ls -lR /configuration/
   kubectl exec -it projected-vol-test -- ls -lR /configuration/..data/
-  kubectl exec -it projected-vol-test -- ls -l /configuration/db/
   ```
 * Examine the secrets:
 
@@ -135,13 +134,13 @@ Explore:
   ```
   kubectl exec -it projected-vol-test -- cat /configuration/..data/home_track; echo ""
   kubectl exec -it projected-vol-test -- cat /configuration/..data/meaning_of_life; echo ""
-  kubectl exec -it projected-vol-test -- cat /configuration/..data/race.properties; echo ""
+  kubectl exec -it projected-vol-test -- cat /configuration/..data/race.properties
   ```
 
 * Clean up:
 
   ```
-  kubectl get all,pv,cm,secrets
+  kubectl get all,cm,secrets
 
   kubectl delete pod projected-vol-test
   kubectl delete secret db-secrets
