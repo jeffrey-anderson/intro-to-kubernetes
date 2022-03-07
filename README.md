@@ -8,12 +8,20 @@
 ## Reference
 * [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
 * [https://kubernetes.io/](https://kubernetes.io/)
-
+* [Configuration Best Practices](https://kubernetes.io/docs/concepts/configuration/overview/)
 
 ## In-class demos
 
-* [Introduction to Kubernetes](intro/Intro.md)
-* [Kubernetes Workloads](workloads/Workloads.md)
+* [Introduction to Kubernetes](intro/README.md)
+* [Kubernetes Workloads](workloads/README.md)
+* [More on storage and config](./storage-and-config/README.md)
+* [Expose Pod Information to Containers Through Environment Variables](https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/)
+* Deploying complex apps:
+  * [Spring Web Essentials](./swe/README.md)
+  * [PHP Guestbook Application with Redis](https://github.com/ColumbusStateWorkforceInnovation/infrastructure-kubernetes-week4-examples/blob/master/example-application.md)
+* Debugging
+  * https://github.com/ColumbusStateWorkforceInnovation/infrastructure-kubernetes-week3-examples/tree/master/debugging
+  * https://github.com/ColumbusStateWorkforceInnovation/infrastructure-kubernetes-week4-examples/blob/master/debugging-applications.md
 
 
 ## What is Kubernetes?
