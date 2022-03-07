@@ -15,6 +15,7 @@
 * [Introduction to Kubernetes](intro/README.md)
 * [Kubernetes Workloads](workloads/README.md)
 * [More on storage and config](./storage-and-config/README.md)
+* [Pulling Private Images](./misc/README.md)
 * Deploying complex apps:
   * [Spring Web Essentials](./swe/README.md)
   * [PHP Guestbook Application with Redis](https://github.com/ColumbusStateWorkforceInnovation/infrastructure-kubernetes-week4-examples/blob/master/example-application.md)
