@@ -186,7 +186,7 @@ Explore:
   kubectl delete configmap/config-map-demo
   ```
 
-# Passing configuration as file data
+# Passing configuration as environment variables
 
 
 References:
