@@ -132,7 +132,6 @@ Explore:
 
 Mount various configuration data using projected volumes into a common directory
 
-
 References:
 * [Projected Volumes](https://kubernetes.io/docs/concepts/storage/projected-volumes/)
 
@@ -185,4 +184,30 @@ Explore:
   kubectl delete pod projected-vol-test
   kubectl delete secret db-secrets
   kubectl delete configmap/config-map-demo
+  ```
+
+# Passing configuration as file data
+
+
+References:
+* [Expose Pod Information to Containers Through Environment Variables](https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/)
+
+Apply [env-vars-test-pod.yaml](./env-vars-test-pod.yaml):
+
+```
+kubectl apply -f env-vars-test-pod.yaml
+kubectl get all,pvc,cm,secrets
+```
+
+Explore:
+* Shell in and look around with `kubectl exec -it environment-vol-test -- /bin/sh` or run the commands below.
+
+  ```
+  kubectl exec -it environment-vol-test -- printenv
+  ```
+
+* Clean up:
+  ```
+  kubectl delete secret/db-secrets configmap/config-map-demo pod/environment-vol-test
+  kubectl get all,pvc,cm,secrets
   ```
