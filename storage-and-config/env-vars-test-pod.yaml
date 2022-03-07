@@ -1,0 +1,67 @@
+#
+# NOTE: FOR REAL PRODUCTION DO NOT COMMIT SECRETS TO A SOURCE CODE REPOSITORY
+#
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secrets
+type: kubernetes.io/basic-auth
+stringData:
+  username: admin
+  password: t0p-Secret
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-map-demo
+data:
+  # property-like keys; each key maps to a simple value
+  meaning_of_life: "42"
+  home_track: "Mid Ohio Speedway"
+
+  # file-like keys
+  race.properties: |
+    favorite.drivers: 9,19
+    team.maximum-cars = 4
+    cars-in-each-race = 36
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: environment-vol-test
+  labels:
+    environment: test
+    project: top-secret-project
+spec:
+  containers:
+  - name: environment-vol-test
+    image: busybox
+    command: [ "/bin/sh", "-c" ]
+    args: [ "trap : TERM INT; sleep 9999999999d & wait" ]
+    env:
+      - name: DATABASE_PASSWORD
+        valueFrom: 
+          secretKeyRef:
+            name: db-secrets
+            key: password
+      - name: DATABASE_USERNAME
+        valueFrom: 
+          secretKeyRef:
+            name: db-secrets
+            key: username
+
+      - name: MEANING_OF_LIFE
+        valueFrom:
+          configMapKeyRef:
+            name: config-map-demo
+            key: meaning_of_life
+      - name: HOME_TRACK
+        valueFrom:
+          configMapKeyRef:
+            name: config-map-demo
+            key: home_track
+      - name: RACE_PROPERTIES
+        valueFrom:
+          configMapKeyRef:
+            name: config-map-demo
+            key: race.properties
