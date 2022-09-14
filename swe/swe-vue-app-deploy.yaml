@@ -16,7 +16,7 @@ spec:
         app: swe-vue-app
     spec:
       containers:
-      - image: datadaddy/swe-vue-k8s:01
+      - image: datadaddy/swe-vue3:k8s
         imagePullPolicy: Always
         name: swe-vue-app
         resources:
